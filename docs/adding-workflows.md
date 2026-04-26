@@ -75,26 +75,104 @@ The citation validator checks that claims containing numbers, percentages, or fi
 
 ```
 researchpilot/
+├── .env.example
+├── .env                          ← buat sendiri, tidak di-commit
+├── .gitignore
+├── docker-compose.yml
+├── railway.toml
+├── vercel.json
+├── README.md
+│
 ├── backend/
+│   ├── Dockerfile
+│   ├── alembic.ini
+│   ├── pyproject.toml
+│   ├── alembic/
+│   │   ├── env.py
+│   │   ├── script.py.mako
+│   │   └── versions/
+│   │       └── 0001_initial.py
 │   └── app/
-│       ├── api/          HTTP layer (routes, schemas)
-│       ├── core/         Workflow logic and prompt templates
-│       ├── data/         Search, scraping, PDF parsing
-│       ├── db/           Models and migrations
-│       ├── exports/      PPTX generator
-│       ├── jobs/         arq worker
-│       └── llm/          Claude client and validators
+│       ├── main.py               ← FastAPI entry point
+│       ├── config.py             ← semua env vars
+│       ├── auth.py               ← Clerk JWT verification
+│       ├── api/
+│       │   ├── routes/
+│       │   │   ├── projects.py
+│       │   │   ├── research.py   ← trigger jobs + SSE stream
+│       │   │   └── exports.py    ← download PPTX
+│       │   └── schemas/
+│       │       ├── project.py
+│       │       └── research.py
+│       ├── core/
+│       │   ├── prompts/
+│       │   │   └── annual_report.py   ← prompt templates
+│       │   └── workflows/
+│       │       ├── annual_report.py
+│       │       ├── competitive_landscape.py
+│       │       ├── precedent_search.py
+│       │       └── industry_overview.py
+│       ├── data/
+│       │   ├── search.py              ← Exa web search
+│       │   ├── scrapers/
+│       │   │   └── annual_report.py   ← Playwright PDF fetch
+│       │   └── parsers/
+│       │       └── pdf.py             ← pdfplumber parser
+│       ├── db/
+│       │   ├── session.py
+│       │   └── models.py              ← Project, ResearchRun, Company, Document
+│       ├── exports/
+│       │   └── pptx.py                ← PowerPoint generator
+│       ├── jobs/
+│       │   └── worker.py              ← arq background worker
+│       └── llm/
+│           ├── client.py              ← Anthropic SDK wrapper
+│           └── validators.py          ← citation checker
+│
 ├── frontend/
+│   ├── Dockerfile
+│   ├── package.json
+│   ├── next.config.js
+│   ├── tailwind.config.ts
+│   ├── tsconfig.json
 │   └── src/
-│       ├── app/          Next.js App Router pages
-│       ├── components/   UI primitives, research components
-│       └── lib/          API client, utilities
+│       ├── middleware.ts              ← Clerk route protection
+│       ├── app/
+│       │   ├── globals.css
+│       │   ├── layout.tsx
+│       │   ├── page.tsx               ← landing page
+│       │   ├── sign-in/
+│       │   ├── sign-up/
+│       │   └── dashboard/
+│       │       ├── page.tsx           ← list projects
+│       │       └── [projectId]/
+│       │           ├── page.tsx       ← list runs + submit
+│       │           └── run/[runId]/
+│       │               └── page.tsx   ← live progress + briefing
+│       ├── components/
+│       │   ├── layout/
+│       │   │   └── AppShell.tsx       ← sidebar + breadcrumb
+│       │   ├── research/
+│       │   │   ├── ProgressTimeline.tsx
+│       │   │   └── BriefingRenderer.tsx
+│       │   └── ui/
+│       │       └── index.tsx          ← Button, Input, Card, Badge, dll
+│       └── lib/
+│           ├── api.ts                 ← semua API calls + SSE reader
+│           └── utils.ts
+│
 ├── infra/
-│   ├── docker/           Postgres Dockerfile, nginx config
-│   └── scripts/          DB seed and reset scripts
+│   ├── docker/
+│   │   ├── postgres.Dockerfile
+│   │   ├── init.sql
+│   │   └── nginx.conf
+│   └── scripts/
+│       ├── seed_companies.py
+│       └── reset_db.sh
+│
 └── docs/
-    ├── env-setup.md      Deployment guide
-    └── adding-workflows.md  How to add a new workflow
+    ├── env-setup.md
+    └── adding-workflows.md
 ```
 
 ## Adding a workflow
