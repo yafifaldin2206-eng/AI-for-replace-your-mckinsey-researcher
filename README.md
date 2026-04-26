@@ -2,7 +2,7 @@
 
 ResearchPilot is an open-source AI research tool that automates the kind of work a junior strategy consultant would do — finding annual reports, parsing them, and generating structured executive briefings. The output is a PowerPoint deck, not a chat response.
 
-The core idea: instead of pasting a PDF into Claude and asking for a summary, ResearchPilot builds a full pipeline around the LLM — automated data acquisition, multi-step prompt chains, citation validation, and formatted export. The result is more reliable and consistent than a single prompt, and requires no manual work from the user beyond typing a company name.
+Instead of pasting a PDF into Claude, getting your token exploded, for only got "penjilat" answer, ResearchPilot builds a full pipeline around the LLM — automated data acquisition, multi-step prompt chains, citation validation, and formatted export. The result is more reliable and consistent than a single prompt, and requires no manual work from the user beyond typing a company name.
 
 ## What it does
 
